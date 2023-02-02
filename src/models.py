@@ -2,18 +2,47 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+class User(Base):
+    __tablename__ = 'user'
+    # Here we define columns for the table person
+    # Notice that each column is also a normal Python instance attribute.
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False, unique=True)
+    password = Column(String(250))
 
-    def __repr__(self):
-        return '<User %r>' % self.username
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
-        }
+class Favorite(Base):
+    __tablename__ = 'favorite'
+    # Here we define columns for the table address.
+    # Notice that each column is also a normal Python instance attribute.
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
+    planet_id = Column(Integer, ForeignKey("planet.id"))
+    planet = relationship(Planet)
+    vehicle_id = Column(Integer, ForeignKey("vehicle.id"))
+    vehicle = relationship(Vehicle)
+    character_id = Column(Integer, ForeignKey("character.id"))
+    character = relationship(Character)
+
+
+class Planet(Base):
+    __tablename__ = 'planet'
+    id = Column(Integer, primary_key=True)
+    diammeter = Column(String(250))
+    gravity = Column(String(250))
+
+
+class Vehicle(Base):
+    __tablename__ = 'vehicle'
+    id = Column(Integer, primary_key=True)
+    Speed = Column(String(250))
+
+
+class Character(Base):
+    __tablename__ = 'character'
+    id = Column(Integer, primary_key=True)
+    Gender = Column(String(250))
+    Age = Column(String(250))
+    Eye_color = Column(String(250))
+
